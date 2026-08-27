@@ -8,7 +8,11 @@ export class PositionManagerComponent {
     const container = document.getElementById(containerId);
     if (!container) return;
 
-    const evalData = currentData.systemEval;
+    const evalData = currentData.systemEval || {
+      currentProfitRate: 30,
+      peakProfitRate: 35,
+      pullbackFromPeak: 5
+    };
     const triggers = TradingSystemEngine.evaluateExitTriggers(
       evalData.currentProfitRate,
       evalData.peakProfitRate,
@@ -17,8 +21,8 @@ export class PositionManagerComponent {
     );
 
     // 默认弹性测算参数
-    const baseCap = currentData.capacityTrend.effectiveCapacity[0];
-    const baseSpread = currentData.capacityTrend.spread[currentData.capacityTrend.spread.length - 1];
+    const baseCap = (currentData.capacityTrend && currentData.capacityTrend.effectiveCapacity) ? currentData.capacityTrend.effectiveCapacity[0] : 100;
+    const baseSpread = (currentData.capacityTrend && currentData.capacityTrend.spread) ? currentData.capacityTrend.spread[currentData.capacityTrend.spread.length - 1] : 600;
     const initElasticity = TradingSystemEngine.calculateElasticity(
       currentData.profile.marketCap,
       baseCap,
@@ -171,19 +175,24 @@ export class PositionManagerComponent {
       </div>
     `;
 
-    // 绑定滑块计算事件
+    // 绑定滑块计算事件 (带防 null 校验)
     const sliderPrice = container.querySelector("#sliderPriceDelta");
     const sliderCost = container.querySelector("#sliderCostFollow");
     const sliderPE = container.querySelector("#sliderTargetPE");
 
     const updateElasticity = () => {
+      if (!sliderPrice || !sliderCost || !sliderPE) return;
       const pDelta = parseFloat(sliderPrice.value);
       const cFollow = parseFloat(sliderCost.value);
       const pe = parseFloat(sliderPE.value);
 
-      container.querySelector("#priceDeltaVal").textContent = `+${pDelta}%`;
-      container.querySelector("#costFollowVal").textContent = `${cFollow}%`;
-      container.querySelector("#targetPEVal").textContent = `${pe}x`;
+      const priceDeltaEl = container.querySelector("#priceDeltaVal");
+      const costFollowEl = container.querySelector("#costFollowVal");
+      const targetPEEl = container.querySelector("#targetPEVal");
+
+      if (priceDeltaEl) priceDeltaEl.textContent = `+${pDelta}%`;
+      if (costFollowEl) costFollowEl.textContent = `${cFollow}%`;
+      if (targetPEEl) targetPEEl.textContent = `${pe}x`;
 
       const res = TradingSystemEngine.calculateElasticity(
         currentData.profile.marketCap,
@@ -194,19 +203,27 @@ export class PositionManagerComponent {
         pe
       );
 
-      container.querySelector("#simSpreadVal").textContent = `${res.simulatedSpread} 元/吨`;
-      container.querySelector("#simProfitVal").textContent = `${res.normalizedNetProfit} 亿元`;
-      container.querySelector("#simMarketCapVal").textContent = `${res.targetMarketCap} 亿元`;
-      container.querySelector("#simPayoffVal").textContent = `${res.payoffMultiplier} 倍`;
-      container.querySelector("#simPayoffVal").style.color = res.isPayoffAcceptable ? 'var(--color-success)' : 'var(--color-warning)';
-      
+      const simSpreadEl = container.querySelector("#simSpreadVal");
+      const simProfitEl = container.querySelector("#simProfitVal");
+      const simMarketCapEl = container.querySelector("#simMarketCapVal");
+      const simPayoffEl = container.querySelector("#simPayoffVal");
       const badge = container.querySelector("#payoffBadge");
-      badge.textContent = `赔率 ${res.payoffMultiplier}x`;
-      badge.className = `badge ${res.isPayoffAcceptable ? 'badge-success' : 'badge-warning'}`;
+
+      if (simSpreadEl) simSpreadEl.textContent = `${res.simulatedSpread} 元/吨`;
+      if (simProfitEl) simProfitEl.textContent = `${res.normalizedNetProfit} 亿元`;
+      if (simMarketCapEl) simMarketCapEl.textContent = `${res.targetMarketCap} 亿元`;
+      if (simPayoffEl) {
+        simPayoffEl.textContent = `${res.payoffMultiplier} 倍`;
+        simPayoffEl.style.color = res.isPayoffAcceptable ? 'var(--color-success)' : 'var(--color-warning)';
+      }
+      if (badge) {
+        badge.textContent = `赔率 ${res.payoffMultiplier}x`;
+        badge.className = `badge ${res.isPayoffAcceptable ? 'badge-success' : 'badge-warning'}`;
+      }
     };
 
-    sliderPrice.addEventListener("input", updateElasticity);
-    sliderCost.addEventListener("input", updateElasticity);
-    sliderPE.addEventListener("input", updateElasticity);
+    if (sliderPrice) sliderPrice.addEventListener("input", updateElasticity);
+    if (sliderCost) sliderCost.addEventListener("input", updateElasticity);
+    if (sliderPE) sliderPE.addEventListener("input", updateElasticity);
   }
 }

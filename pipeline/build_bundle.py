@@ -1,7 +1,11 @@
 # -*- coding: utf-8 -*-
 """
-自动将所有 ES 模块打包为单文件独立运行版 bundle.js
-彻底消除浏览器直接双击打开 (file:/// 协议) 时的 CORS 限制！
+修复模块声明顺序与打包：
+1. 先声明具体股票数据集 (sanyou, yihua, zhongwu)
+2. 再声明总标的库 masterUniverse (引用上述数据集)
+3. 声明计算引擎与图表库
+4. 声明各 UI 组件
+5. 声明并执行 AppController
 """
 import os
 import re
@@ -12,21 +16,24 @@ sys.stdout.reconfigure(encoding='utf-8')
 base_dir = r"c:\ai\antigravity\heavycore-quant-terminal"
 js_dir = os.path.join(base_dir, "js")
 
+# 严格按依赖顺序排列
 files_in_order = [
-    # 1. 数据集
-    os.path.join(js_dir, "data", "masterUniverse.js"),
+    # 1. 先加载独立股票数据集
     os.path.join(js_dir, "data", "sanyou_600409.js"),
     os.path.join(js_dir, "data", "yihua_000422.js"),
     os.path.join(js_dir, "data", "zhongwu_000657.js"),
 
-    # 2. 核心计算引擎
+    # 2. 再加载总标的库 (依赖上述数据)
+    os.path.join(js_dir, "data", "masterUniverse.js"),
+
+    # 3. 核心计算引擎
     os.path.join(js_dir, "engine", "zhangXinminEngine.js"),
     os.path.join(js_dir, "engine", "tradingSystemEngine.js"),
 
-    # 3. Canvas 高性能图表库
+    # 4. Canvas 高性能图表库
     os.path.join(js_dir, "charts", "customCanvasCharts.js"),
 
-    # 4. 界面组件
+    # 5. 界面组件
     os.path.join(js_dir, "components", "vetoScorecard.js"),
     os.path.join(js_dir, "components", "positionManager.js"),
     os.path.join(js_dir, "components", "zhangXinminPanel.js"),
@@ -34,13 +41,13 @@ files_in_order = [
     os.path.join(js_dir, "components", "universeView.js"),
     os.path.join(js_dir, "components", "dataHubModal.js"),
 
-    # 5. 主控制器
+    # 6. 主控制器
     os.path.join(js_dir, "app.js")
 ]
 
 bundle_content = """/**
  * 「重器」周期国企投研工作站 - 独立整合单文件 Bundle
- * 支持：直接双击打开 (file:///) 与 本地 HTTP 服务 (http://) 全兼容运行
+ * 支持：直接双击打开 (file:///) 与 Vercel / 本地 HTTP 服务 全兼容运行
  */
 (function() {
   'use strict';
@@ -66,4 +73,4 @@ out_bundle = os.path.join(js_dir, "bundle.js")
 with open(out_bundle, "w", encoding="utf-8") as f:
     f.write(bundle_content)
 
-print(f"[Success] Bundle generated at: {out_bundle}")
+print(f"[Success] Bundle re-generated at: {out_bundle}")

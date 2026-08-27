@@ -1,258 +1,9 @@
 /**
  * 「重器」周期国企投研工作站 - 独立整合单文件 Bundle
- * 支持：直接双击打开 (file:///) 与 本地 HTTP 服务 (http://) 全兼容运行
+ * 支持：直接双击打开 (file:///) 与 Vercel / 本地 HTTP 服务 全兼容运行
  */
 (function() {
   'use strict';
-
-
-// ==================== Source: masterUniverse.js ====================
-/**
- * 「重器」总标的库数据中心 (Master Universe Registry)
- * 按照交易体系打分严格划分为三大等级梯队 + 淘汰否决池
- */
-
-
-
-
-
-const MasterUniverseData = [
-  // ==========================================
-  // 【第一梯队：重仓爆发池】(得分 >= 80分，右侧供需共振+强催化)
-  // ==========================================
-  {
-    code: "000422",
-    name: "湖北宜化",
-    exchange: "SZ",
-    tier: "tier1",
-    tierLabel: "第一梯队 · 重仓爆发池",
-    tierBadge: "badge-success",
-    score: 90,
-    recommendation: "重仓出击 (6~8成)",
-    industry: "磷化工 / 农化制品",
-    soeLevel: "宜昌市国资委重点平台",
-    marketCap: 142.6,
-    stockPrice: 13.25,
-    pbRatio: 1.18,
-    pbPercentile: 12.5,
-    dividendYield: 3.8,
-    debtRatio: 54.8,
-    spreadStatus: "剪刀差持续扩大",
-    coreCatalyst: "注入集团优质磷矿 + 磷肥尿素供给强约束",
-    targetMultiplier: "2.85x",
-    dataRef: YihuaData
-  },
-  {
-    code: "600096",
-    name: "云天化",
-    exchange: "SH",
-    tier: "tier1",
-    tierLabel: "第一梯队 · 重仓爆发池",
-    tierBadge: "badge-success",
-    score: 85,
-    recommendation: "重仓出击 (6~8成)",
-    industry: "化肥 / 磷化工全产业链",
-    soeLevel: "云南省国资委控股骨干国企",
-    marketCap: 385.0,
-    stockPrice: 20.95,
-    pbRatio: 1.35,
-    pbPercentile: 14.0,
-    dividendYield: 5.2,
-    debtRatio: 58.2,
-    spreadStatus: "高位维持且成本极低",
-    coreCatalyst: "磷矿自给率超90% + 高股息分红承诺",
-    targetMultiplier: "2.40x",
-    dataRef: null // 使用标准模板
-  },
-  {
-    code: "600426",
-    name: "华鲁恒升",
-    exchange: "SH",
-    tier: "tier1",
-    tierLabel: "第一梯队 · 重仓爆发池",
-    tierBadge: "badge-success",
-    score: 82,
-    recommendation: "重仓出击 (6~8成)",
-    industry: "煤化工 / 新材料多联产",
-    soeLevel: "山东省国资委控股龙头",
-    marketCap: 560.0,
-    stockPrice: 26.40,
-    pbRatio: 1.48,
-    pbPercentile: 11.2,
-    dividendYield: 3.5,
-    debtRatio: 42.5,
-    spreadStatus: "全行业成本洼地",
-    coreCatalyst: "荆州二期基地释放 + 极致成本护城河",
-    targetMultiplier: "2.15x",
-    dataRef: null
-  },
-
-  // ==========================================
-  // 【第二梯队：中仓过渡/催化池】(得分 60 ~ 79分，核心驱动成立，待催化爆发)
-  // ==========================================
-  {
-    code: "600409",
-    name: "三友化工",
-    exchange: "SH",
-    tier: "tier2",
-    tierLabel: "第二梯队 · 中仓催化池",
-    tierBadge: "badge-info",
-    score: 70,
-    recommendation: "中等仓位 (3~5成)",
-    industry: "纯碱 / 粘胶短纤 / 氯碱",
-    soeLevel: "唐山市国资委重点国企",
-    marketCap: 118.5,
-    stockPrice: 5.75,
-    pbRatio: 0.88,
-    pbPercentile: 9.2,
-    dividendYield: 4.2,
-    debtRatio: 52.4,
-    spreadStatus: "底部企稳回升",
-    coreCatalyst: "破净深度安全垫 + 粘胶与纯碱双重出清",
-    targetMultiplier: "2.20x",
-    dataRef: SanyouData
-  },
-  {
-    code: "000657",
-    name: "中钨高新",
-    exchange: "SZ",
-    tier: "tier2",
-    tierLabel: "第二梯队 · 中仓催化池",
-    tierBadge: "badge-info",
-    score: 70,
-    recommendation: "中等仓位 (3~5成)",
-    industry: "高端数控刀具 / 硬质合金",
-    soeLevel: "中国五矿集团核心央企",
-    marketCap: 168.4,
-    stockPrice: 12.05,
-    pbRatio: 1.45,
-    pbPercentile: 14.8,
-    dividendYield: 2.2,
-    debtRatio: 46.2,
-    spreadStatus: "价差温和走阔",
-    coreCatalyst: "五矿优质钨矿资产注入预案推进 + 刀片国产替代",
-    targetMultiplier: "2.50x",
-    dataRef: ZhongwuData
-  },
-  {
-    code: "600497",
-    name: "驰宏锌锗",
-    exchange: "SH",
-    tier: "tier2",
-    tierLabel: "第二梯队 · 中仓催化池",
-    tierBadge: "badge-info",
-    score: 65,
-    recommendation: "中等仓位 (3~5成)",
-    industry: "铅锌冶炼 / 高纯锗材料",
-    soeLevel: "中国铝业集团直管央企",
-    marketCap: 285.0,
-    stockPrice: 5.60,
-    pbRatio: 1.25,
-    pbPercentile: 13.0,
-    dividendYield: 3.1,
-    debtRatio: 38.5,
-    spreadStatus: "矿端偏紧冶炼底部",
-    coreCatalyst: "高品位矿山自给率高 + 战略小金属锗涨价",
-    targetMultiplier: "2.05x",
-    dataRef: null
-  },
-
-  // ==========================================
-  // 【第三梯队：左侧观察/极寒底仓池】(得分 40 ~ 59分，深度破净极寒期，适度埋伏)
-  // ==========================================
-  {
-    code: "000830",
-    name: "鲁西化工",
-    exchange: "SZ",
-    tier: "tier3",
-    tierLabel: "第三梯队 · 左侧观察池",
-    tierBadge: "badge-warning",
-    score: 55,
-    recommendation: "轻仓试探 (1~2成)",
-    industry: "基础化工 / 氟硅新材料",
-    soeLevel: "中国中化集团控股央企",
-    marketCap: 230.0,
-    stockPrice: 12.10,
-    pbRatio: 1.15,
-    pbPercentile: 10.5,
-    dividendYield: 2.8,
-    debtRatio: 56.0,
-    spreadStatus: "低谷震荡磨底",
-    coreCatalyst: "大额CAPEX进入尾声 + 中化集团协同赋能",
-    targetMultiplier: "1.90x",
-    dataRef: null
-  },
-  {
-    code: "000059",
-    name: "华锦股份",
-    exchange: "SZ",
-    tier: "tier3",
-    tierLabel: "第三梯队 · 左侧观察池",
-    tierBadge: "badge-warning",
-    score: 45,
-    recommendation: "轻仓试探 (1~2成)",
-    industry: "石油化工 / 农用化肥",
-    soeLevel: "中国兵器工业集团控股",
-    marketCap: 88.0,
-    stockPrice: 5.50,
-    pbRatio: 0.72,
-    pbPercentile: 5.0,
-    dividendYield: 1.5,
-    debtRatio: 62.0,
-    spreadStatus: "炼化价差处于历史冰点",
-    coreCatalyst: "深度破净 (PB 0.72) + 精细化工转型重组预期",
-    targetMultiplier: "2.10x",
-    dataRef: null
-  },
-  {
-    code: "600691",
-    name: "阳煤化工",
-    exchange: "SH",
-    tier: "tier3",
-    tierLabel: "第三梯队 · 左侧观察池",
-    tierBadge: "badge-warning",
-    score: 40,
-    recommendation: "轻仓试探 (1~2成)",
-    industry: "传统煤化工 / 尿素",
-    soeLevel: "山西省国资委控股平台",
-    marketCap: 65.0,
-    stockPrice: 2.75,
-    pbRatio: 0.85,
-    pbPercentile: 6.8,
-    dividendYield: 0.0,
-    debtRatio: 68.5,
-    spreadStatus: "亏损收窄但仍处边缘",
-    coreCatalyst: "落后产能剥离出清 + 国资纾困改革",
-    targetMultiplier: "1.80x",
-    dataRef: null
-  },
-
-  // ==========================================
-  // 【一票否决/淘汰池】(存在硬伤/暴雷风险，坚决不买)
-  // ==========================================
-  {
-    code: "000999_DEMO",
-    name: "ST某化工 (反例演示)",
-    exchange: "SZ",
-    tier: "veto",
-    tierLabel: "一票否决 · 淘汰排除池",
-    tierBadge: "badge-danger",
-    score: 20,
-    recommendation: "0 仓位 (坚决回避)",
-    industry: "特种化工 / 多元跨界",
-    soeLevel: "地方国企边缘亏损资产",
-    marketCap: 32.0,
-    stockPrice: 3.10,
-    pbRatio: 3.40,
-    pbPercentile: 85.0,
-    dividendYield: 0.0,
-    debtRatio: 88.5,
-    spreadStatus: "持续恶化亏损",
-    coreCatalyst: "【否决】资产负债率超85%，发生大额违规担保与商誉暴雷",
-    targetMultiplier: "0.40x",
-    dataRef: null
-  }
-];
 
 
 // ==================== Source: sanyou_600409.js ====================
@@ -559,6 +310,255 @@ const ZhongwuData = {
     pullbackFromPeak: 16.1   // 回调达 16.1% >= 15%，触发回补提醒信号！
   }
 };
+
+
+// ==================== Source: masterUniverse.js ====================
+/**
+ * 「重器」总标的库数据中心 (Master Universe Registry)
+ * 按照交易体系打分严格划分为三大等级梯队 + 淘汰否决池
+ */
+
+
+
+
+
+const MasterUniverseData = [
+  // ==========================================
+  // 【第一梯队：重仓爆发池】(得分 >= 80分，右侧供需共振+强催化)
+  // ==========================================
+  {
+    code: "000422",
+    name: "湖北宜化",
+    exchange: "SZ",
+    tier: "tier1",
+    tierLabel: "第一梯队 · 重仓爆发池",
+    tierBadge: "badge-success",
+    score: 90,
+    recommendation: "重仓出击 (6~8成)",
+    industry: "磷化工 / 农化制品",
+    soeLevel: "宜昌市国资委重点平台",
+    marketCap: 142.6,
+    stockPrice: 13.25,
+    pbRatio: 1.18,
+    pbPercentile: 12.5,
+    dividendYield: 3.8,
+    debtRatio: 54.8,
+    spreadStatus: "剪刀差持续扩大",
+    coreCatalyst: "注入集团优质磷矿 + 磷肥尿素供给强约束",
+    targetMultiplier: "2.85x",
+    dataRef: YihuaData
+  },
+  {
+    code: "600096",
+    name: "云天化",
+    exchange: "SH",
+    tier: "tier1",
+    tierLabel: "第一梯队 · 重仓爆发池",
+    tierBadge: "badge-success",
+    score: 85,
+    recommendation: "重仓出击 (6~8成)",
+    industry: "化肥 / 磷化工全产业链",
+    soeLevel: "云南省国资委控股骨干国企",
+    marketCap: 385.0,
+    stockPrice: 20.95,
+    pbRatio: 1.35,
+    pbPercentile: 14.0,
+    dividendYield: 5.2,
+    debtRatio: 58.2,
+    spreadStatus: "高位维持且成本极低",
+    coreCatalyst: "磷矿自给率超90% + 高股息分红承诺",
+    targetMultiplier: "2.40x",
+    dataRef: null // 使用标准模板
+  },
+  {
+    code: "600426",
+    name: "华鲁恒升",
+    exchange: "SH",
+    tier: "tier1",
+    tierLabel: "第一梯队 · 重仓爆发池",
+    tierBadge: "badge-success",
+    score: 82,
+    recommendation: "重仓出击 (6~8成)",
+    industry: "煤化工 / 新材料多联产",
+    soeLevel: "山东省国资委控股龙头",
+    marketCap: 560.0,
+    stockPrice: 26.40,
+    pbRatio: 1.48,
+    pbPercentile: 11.2,
+    dividendYield: 3.5,
+    debtRatio: 42.5,
+    spreadStatus: "全行业成本洼地",
+    coreCatalyst: "荆州二期基地释放 + 极致成本护城河",
+    targetMultiplier: "2.15x",
+    dataRef: null
+  },
+
+  // ==========================================
+  // 【第二梯队：中仓过渡/催化池】(得分 60 ~ 79分，核心驱动成立，待催化爆发)
+  // ==========================================
+  {
+    code: "600409",
+    name: "三友化工",
+    exchange: "SH",
+    tier: "tier2",
+    tierLabel: "第二梯队 · 中仓催化池",
+    tierBadge: "badge-info",
+    score: 70,
+    recommendation: "中等仓位 (3~5成)",
+    industry: "纯碱 / 粘胶短纤 / 氯碱",
+    soeLevel: "唐山市国资委重点国企",
+    marketCap: 118.5,
+    stockPrice: 5.75,
+    pbRatio: 0.88,
+    pbPercentile: 9.2,
+    dividendYield: 4.2,
+    debtRatio: 52.4,
+    spreadStatus: "底部企稳回升",
+    coreCatalyst: "破净深度安全垫 + 粘胶与纯碱双重出清",
+    targetMultiplier: "2.20x",
+    dataRef: SanyouData
+  },
+  {
+    code: "000657",
+    name: "中钨高新",
+    exchange: "SZ",
+    tier: "tier2",
+    tierLabel: "第二梯队 · 中仓催化池",
+    tierBadge: "badge-info",
+    score: 70,
+    recommendation: "中等仓位 (3~5成)",
+    industry: "高端数控刀具 / 硬质合金",
+    soeLevel: "中国五矿集团核心央企",
+    marketCap: 168.4,
+    stockPrice: 12.05,
+    pbRatio: 1.45,
+    pbPercentile: 14.8,
+    dividendYield: 2.2,
+    debtRatio: 46.2,
+    spreadStatus: "价差温和走阔",
+    coreCatalyst: "五矿优质钨矿资产注入预案推进 + 刀片国产替代",
+    targetMultiplier: "2.50x",
+    dataRef: ZhongwuData
+  },
+  {
+    code: "600497",
+    name: "驰宏锌锗",
+    exchange: "SH",
+    tier: "tier2",
+    tierLabel: "第二梯队 · 中仓催化池",
+    tierBadge: "badge-info",
+    score: 65,
+    recommendation: "中等仓位 (3~5成)",
+    industry: "铅锌冶炼 / 高纯锗材料",
+    soeLevel: "中国铝业集团直管央企",
+    marketCap: 285.0,
+    stockPrice: 5.60,
+    pbRatio: 1.25,
+    pbPercentile: 13.0,
+    dividendYield: 3.1,
+    debtRatio: 38.5,
+    spreadStatus: "矿端偏紧冶炼底部",
+    coreCatalyst: "高品位矿山自给率高 + 战略小金属锗涨价",
+    targetMultiplier: "2.05x",
+    dataRef: null
+  },
+
+  // ==========================================
+  // 【第三梯队：左侧观察/极寒底仓池】(得分 40 ~ 59分，深度破净极寒期，适度埋伏)
+  // ==========================================
+  {
+    code: "000830",
+    name: "鲁西化工",
+    exchange: "SZ",
+    tier: "tier3",
+    tierLabel: "第三梯队 · 左侧观察池",
+    tierBadge: "badge-warning",
+    score: 55,
+    recommendation: "轻仓试探 (1~2成)",
+    industry: "基础化工 / 氟硅新材料",
+    soeLevel: "中国中化集团控股央企",
+    marketCap: 230.0,
+    stockPrice: 12.10,
+    pbRatio: 1.15,
+    pbPercentile: 10.5,
+    dividendYield: 2.8,
+    debtRatio: 56.0,
+    spreadStatus: "低谷震荡磨底",
+    coreCatalyst: "大额CAPEX进入尾声 + 中化集团协同赋能",
+    targetMultiplier: "1.90x",
+    dataRef: null
+  },
+  {
+    code: "000059",
+    name: "华锦股份",
+    exchange: "SZ",
+    tier: "tier3",
+    tierLabel: "第三梯队 · 左侧观察池",
+    tierBadge: "badge-warning",
+    score: 45,
+    recommendation: "轻仓试探 (1~2成)",
+    industry: "石油化工 / 农用化肥",
+    soeLevel: "中国兵器工业集团控股",
+    marketCap: 88.0,
+    stockPrice: 5.50,
+    pbRatio: 0.72,
+    pbPercentile: 5.0,
+    dividendYield: 1.5,
+    debtRatio: 62.0,
+    spreadStatus: "炼化价差处于历史冰点",
+    coreCatalyst: "深度破净 (PB 0.72) + 精细化工转型重组预期",
+    targetMultiplier: "2.10x",
+    dataRef: null
+  },
+  {
+    code: "600691",
+    name: "阳煤化工",
+    exchange: "SH",
+    tier: "tier3",
+    tierLabel: "第三梯队 · 左侧观察池",
+    tierBadge: "badge-warning",
+    score: 40,
+    recommendation: "轻仓试探 (1~2成)",
+    industry: "传统煤化工 / 尿素",
+    soeLevel: "山西省国资委控股平台",
+    marketCap: 65.0,
+    stockPrice: 2.75,
+    pbRatio: 0.85,
+    pbPercentile: 6.8,
+    dividendYield: 0.0,
+    debtRatio: 68.5,
+    spreadStatus: "亏损收窄但仍处边缘",
+    coreCatalyst: "落后产能剥离出清 + 国资纾困改革",
+    targetMultiplier: "1.80x",
+    dataRef: null
+  },
+
+  // ==========================================
+  // 【一票否决/淘汰池】(存在硬伤/暴雷风险，坚决不买)
+  // ==========================================
+  {
+    code: "000999_DEMO",
+    name: "ST某化工 (反例演示)",
+    exchange: "SZ",
+    tier: "veto",
+    tierLabel: "一票否决 · 淘汰排除池",
+    tierBadge: "badge-danger",
+    score: 20,
+    recommendation: "0 仓位 (坚决回避)",
+    industry: "特种化工 / 多元跨界",
+    soeLevel: "地方国企边缘亏损资产",
+    marketCap: 32.0,
+    stockPrice: 3.10,
+    pbRatio: 3.40,
+    pbPercentile: 85.0,
+    dividendYield: 0.0,
+    debtRatio: 88.5,
+    spreadStatus: "持续恶化亏损",
+    coreCatalyst: "【否决】资产负债率超85%，发生大额违规担保与商誉暴雷",
+    targetMultiplier: "0.40x",
+    dataRef: null
+  }
+];
 
 
 // ==================== Source: zhangXinminEngine.js ====================
@@ -1450,7 +1450,11 @@ class PositionManagerComponent {
     const container = document.getElementById(containerId);
     if (!container) return;
 
-    const evalData = currentData.systemEval;
+    const evalData = currentData.systemEval || {
+      currentProfitRate: 30,
+      peakProfitRate: 35,
+      pullbackFromPeak: 5
+    };
     const triggers = TradingSystemEngine.evaluateExitTriggers(
       evalData.currentProfitRate,
       evalData.peakProfitRate,
@@ -1459,8 +1463,8 @@ class PositionManagerComponent {
     );
 
     // 默认弹性测算参数
-    const baseCap = currentData.capacityTrend.effectiveCapacity[0];
-    const baseSpread = currentData.capacityTrend.spread[currentData.capacityTrend.spread.length - 1];
+    const baseCap = (currentData.capacityTrend && currentData.capacityTrend.effectiveCapacity) ? currentData.capacityTrend.effectiveCapacity[0] : 100;
+    const baseSpread = (currentData.capacityTrend && currentData.capacityTrend.spread) ? currentData.capacityTrend.spread[currentData.capacityTrend.spread.length - 1] : 600;
     const initElasticity = TradingSystemEngine.calculateElasticity(
       currentData.profile.marketCap,
       baseCap,
@@ -1613,19 +1617,24 @@ class PositionManagerComponent {
       </div>
     `;
 
-    // 绑定滑块计算事件
+    // 绑定滑块计算事件 (带防 null 校验)
     const sliderPrice = container.querySelector("#sliderPriceDelta");
     const sliderCost = container.querySelector("#sliderCostFollow");
     const sliderPE = container.querySelector("#sliderTargetPE");
 
     const updateElasticity = () => {
+      if (!sliderPrice || !sliderCost || !sliderPE) return;
       const pDelta = parseFloat(sliderPrice.value);
       const cFollow = parseFloat(sliderCost.value);
       const pe = parseFloat(sliderPE.value);
 
-      container.querySelector("#priceDeltaVal").textContent = `+${pDelta}%`;
-      container.querySelector("#costFollowVal").textContent = `${cFollow}%`;
-      container.querySelector("#targetPEVal").textContent = `${pe}x`;
+      const priceDeltaEl = container.querySelector("#priceDeltaVal");
+      const costFollowEl = container.querySelector("#costFollowVal");
+      const targetPEEl = container.querySelector("#targetPEVal");
+
+      if (priceDeltaEl) priceDeltaEl.textContent = `+${pDelta}%`;
+      if (costFollowEl) costFollowEl.textContent = `${cFollow}%`;
+      if (targetPEEl) targetPEEl.textContent = `${pe}x`;
 
       const res = TradingSystemEngine.calculateElasticity(
         currentData.profile.marketCap,
@@ -1636,20 +1645,28 @@ class PositionManagerComponent {
         pe
       );
 
-      container.querySelector("#simSpreadVal").textContent = `${res.simulatedSpread} 元/吨`;
-      container.querySelector("#simProfitVal").textContent = `${res.normalizedNetProfit} 亿元`;
-      container.querySelector("#simMarketCapVal").textContent = `${res.targetMarketCap} 亿元`;
-      container.querySelector("#simPayoffVal").textContent = `${res.payoffMultiplier} 倍`;
-      container.querySelector("#simPayoffVal").style.color = res.isPayoffAcceptable ? 'var(--color-success)' : 'var(--color-warning)';
-      
+      const simSpreadEl = container.querySelector("#simSpreadVal");
+      const simProfitEl = container.querySelector("#simProfitVal");
+      const simMarketCapEl = container.querySelector("#simMarketCapVal");
+      const simPayoffEl = container.querySelector("#simPayoffVal");
       const badge = container.querySelector("#payoffBadge");
-      badge.textContent = `赔率 ${res.payoffMultiplier}x`;
-      badge.className = `badge ${res.isPayoffAcceptable ? 'badge-success' : 'badge-warning'}`;
+
+      if (simSpreadEl) simSpreadEl.textContent = `${res.simulatedSpread} 元/吨`;
+      if (simProfitEl) simProfitEl.textContent = `${res.normalizedNetProfit} 亿元`;
+      if (simMarketCapEl) simMarketCapEl.textContent = `${res.targetMarketCap} 亿元`;
+      if (simPayoffEl) {
+        simPayoffEl.textContent = `${res.payoffMultiplier} 倍`;
+        simPayoffEl.style.color = res.isPayoffAcceptable ? 'var(--color-success)' : 'var(--color-warning)';
+      }
+      if (badge) {
+        badge.textContent = `赔率 ${res.payoffMultiplier}x`;
+        badge.className = `badge ${res.isPayoffAcceptable ? 'badge-success' : 'badge-warning'}`;
+      }
     };
 
-    sliderPrice.addEventListener("input", updateElasticity);
-    sliderCost.addEventListener("input", updateElasticity);
-    sliderPE.addEventListener("input", updateElasticity);
+    if (sliderPrice) sliderPrice.addEventListener("input", updateElasticity);
+    if (sliderCost) sliderCost.addEventListener("input", updateElasticity);
+    if (sliderPE) sliderPE.addEventListener("input", updateElasticity);
   }
 }
 
