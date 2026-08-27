@@ -1,0 +1,219 @@
+/* ==========================================================================
+   Layout Styles: Responsive Grid & Header Structure
+   ========================================================================== */
+
+.app-wrapper {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  background: var(--bg-app);
+}
+
+/* Header & Ticker Bar */
+.top-navbar {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 20px;
+  height: 56px;
+  background: var(--bg-secondary);
+  border-bottom: 1px solid var(--border-subtle);
+  backdrop-filter: blur(12px);
+}
+
+.brand-section {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.brand-logo {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-weight: 700;
+  font-size: 15px;
+  letter-spacing: -0.3px;
+  color: var(--text-primary);
+}
+
+.brand-badge {
+  font-size: 11px;
+  padding: 2px 6px;
+  border-radius: var(--radius-sm);
+  background: var(--color-warning-bg);
+  color: var(--color-warning);
+  border: 1px solid var(--color-warning-border);
+  font-weight: 600;
+}
+
+.stock-selector-pills {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: var(--bg-primary);
+  padding: 4px;
+  border-radius: var(--radius-pill);
+  border: 1px solid var(--border-subtle);
+}
+
+.stock-pill-btn {
+  background: transparent;
+  border: none;
+  color: var(--text-secondary);
+  padding: 4px 14px;
+  border-radius: var(--radius-pill);
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.stock-pill-btn:hover {
+  color: var(--text-primary);
+  background: var(--bg-tertiary);
+}
+
+.stock-pill-btn.active {
+  background: var(--color-brand);
+  color: #ffffff;
+  font-weight: 600;
+  box-shadow: 0 1px 4px rgba(88, 166, 255, 0.4);
+}
+
+.nav-actions {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.view-mode-tabs {
+  display: flex;
+  background: var(--bg-primary);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-md);
+  padding: 3px;
+}
+
+.view-tab-btn {
+  background: transparent;
+  border: none;
+  color: var(--text-secondary);
+  padding: 5px 12px;
+  border-radius: var(--radius-sm);
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.view-tab-btn.active {
+  background: var(--bg-tertiary);
+  color: var(--text-primary);
+  font-weight: 600;
+}
+
+/* Main Content Area */
+.main-container {
+  flex: 1;
+  padding: 16px 20px;
+  max-width: 1720px;
+  margin: 0 auto;
+  width: 100%;
+}
+
+/* Live Ticker Header Bar */
+.ticker-summary-bar {
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  gap: 20px;
+  background: var(--bg-secondary);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-lg);
+  padding: 14px 20px;
+  margin-bottom: 16px;
+  align-items: center;
+}
+
+.ticker-identity {
+  display: flex;
+  align-items: baseline;
+  gap: 12px;
+}
+
+.ticker-name {
+  font-size: 20px;
+  font-weight: 700;
+  color: var(--text-primary);
+}
+
+.ticker-code {
+  font-family: var(--font-mono);
+  color: var(--text-secondary);
+  font-size: 14px;
+}
+
+.ticker-tags {
+  display: flex;
+  gap: 6px;
+  margin-left: 8px;
+}
+
+.ticker-stats-row {
+  display: flex;
+  gap: 24px;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.stat-item {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.stat-label {
+  font-size: 11px;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.3px;
+}
+
+.stat-value {
+  font-family: var(--font-mono);
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+/* Workstation Grid Layout */
+.workstation-grid {
+  display: grid;
+  grid-template-columns: 380px 1fr 390px;
+  gap: 16px;
+  align-items: start;
+}
+
+@media (max-width: 1400px) {
+  .workstation-grid {
+    grid-template-columns: 340px 1fr 340px;
+  }
+}
+
+@media (max-width: 1150px) {
+  .workstation-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.column-left, .column-center, .column-right {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}

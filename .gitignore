@@ -1,0 +1,9 @@
+# Logs & Cache
+__pycache__/
+*.pyc
+.system_generated/
+*.log
+
+# Temp
+.DS_Store
+Thumbs.db

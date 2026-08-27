@@ -1,0 +1,96 @@
+/* ==========================================================================
+   Hallmark Anti-AI-Slop Eye-Protective Design Tokens
+   Genre: Modern-Minimal / Technical-Editorial | Theme: Obsidian Slate
+   ========================================================================== */
+
+:root {
+  /* Surface & Background (Low Blue Spike, High Eye-Protection) */
+  --bg-app: #090d12;
+  --bg-primary: #0d1117;
+  --bg-secondary: #161b22;
+  --bg-tertiary: #1c2128;
+  --bg-card: #161b22;
+  --bg-card-hover: #1f242c;
+  --bg-card-active: #242a34;
+  --bg-glass: rgba(22, 27, 34, 0.85);
+
+  /* Hairline Borders (Crisp, Non-Blurry, Non-Tacky) */
+  --border-subtle: #30363d;
+  --border-default: #3d444d;
+  --border-active: #58a6ff;
+  --border-accent: #d29922;
+
+  /* Typography Colors (High Contrast, Zero Glare) */
+  --text-primary: #f0f6fc;
+  --text-secondary: #8b949e;
+  --text-muted: #6e7681;
+  --text-inverse: #0d1117;
+
+  /* Semantic Accents (Warm Amber, Sage Green, Terracotta Red, Cobalt Blue) */
+  --color-brand: #58a6ff;
+  --color-brand-glow: rgba(88, 166, 255, 0.15);
+  
+  --color-success: #3fb950;
+  --color-success-bg: rgba(63, 185, 80, 0.12);
+  --color-success-border: rgba(63, 185, 80, 0.35);
+
+  --color-warning: #d29922;
+  --color-warning-bg: rgba(210, 153, 34, 0.12);
+  --color-warning-border: rgba(210, 153, 34, 0.35);
+
+  --color-danger: #f85149;
+  --color-danger-bg: rgba(248, 81, 73, 0.12);
+  --color-danger-border: rgba(248, 81, 73, 0.35);
+
+  --color-purple: #bc8cff;
+  --color-purple-bg: rgba(188, 140, 255, 0.12);
+  --color-cyan: #39c5bb;
+
+  /* Fonts */
+  --font-sans: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif;
+  --font-mono: "JetBrains Mono", "SF Mono", Consolas, "Liberation Mono", Menlo, Courier, monospace;
+
+  /* Elevation & Radius */
+  --radius-sm: 4px;
+  --radius-md: 6px;
+  --radius-lg: 10px;
+  --radius-pill: 9999px;
+
+  --shadow-card: 0 1px 3px rgba(0, 0, 0, 0.4);
+  --shadow-floating: 0 8px 24px rgba(0, 0, 0, 0.65);
+}
+
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html, body {
+  width: 100%;
+  min-height: 100vh;
+  background-color: var(--bg-app);
+  color: var(--text-primary);
+  font-family: var(--font-sans);
+  font-size: 14px;
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  overflow-x: hidden;
+}
+
+/* Custom Scrollbar for Terminal aesthetic */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-track {
+  background: var(--bg-primary);
+}
+::-webkit-scrollbar-thumb {
+  background: var(--border-subtle);
+  border-radius: var(--radius-pill);
+}
+::-webkit-scrollbar-thumb:hover {
+  background: var(--border-default);
+}
