@@ -4,6 +4,7 @@
 import { SanyouData } from "./data/sanyou_600409.js";
 import { YihuaData } from "./data/yihua_000422.js";
 import { ZhongwuData } from "./data/zhongwu_000657.js";
+import { LeaderDatasetsRegistry } from "./data/leaderDatasets.js";
 import { MasterUniverseData } from "./data/masterUniverse.js";
 import { CustomCanvasCharts } from "./charts/customCanvasCharts.js";
 import { VetoScorecardComponent } from "./components/vetoScorecard.js";
@@ -23,7 +24,16 @@ const StocksRegistry = {
 function getOrGenerateStockData(code) {
   if (StocksRegistry[code]) return StocksRegistry[code];
 
+  if (typeof LeaderDatasetsRegistry !== "undefined" && LeaderDatasetsRegistry[code]) {
+    StocksRegistry[code] = LeaderDatasetsRegistry[code];
+    return LeaderDatasetsRegistry[code];
+  }
+
   const item = MasterUniverseData.find(s => s.code === code);
+  if (item && item.dataRef) {
+    StocksRegistry[code] = item.dataRef;
+    return item.dataRef;
+  }
   if (!item) return StocksRegistry["600409"];
 
   const generatedData = {
@@ -155,11 +165,46 @@ let currentView = "workstation"; // 'universe', 'workstation', 'report'
 
 class AppController {
   static init() {
+    this.renderStockPills();
     this.bindGlobalEvents();
     DataHubModalComponent.init(() => {
       this.renderCurrentStock();
     });
     this.renderCurrentStock();
+  }
+
+  static renderStockPills() {
+    const container = document.getElementById("stockSelectorPills");
+    if (!container) return;
+
+    container.innerHTML = MasterUniverseData.map(s => `
+      <button class="stock-pill-btn ${s.code === currentCode ? 'active' : ''}" data-code="${s.code}">
+        <span>${s.name}</span>
+        <span style="font-family: var(--font-mono); font-size: 11px; opacity: 0.8;">${s.code}</span>
+      </button>
+    `).join("");
+
+    container.querySelectorAll(".stock-pill-btn").forEach(btn => {
+      btn.addEventListener("click", () => {
+        container.querySelectorAll(".stock-pill-btn").forEach(b => b.classList.remove("active"));
+        btn.classList.add("active");
+        currentCode = btn.dataset.code;
+        this.switchView("workstation");
+        this.renderCurrentStock();
+      });
+    });
+  }
+
+  static updateActiveStockPill() {
+    const container = document.getElementById("stockSelectorPills");
+    if (!container) return;
+    container.querySelectorAll(".stock-pill-btn").forEach(b => {
+      const isCurrent = b.dataset.code === currentCode;
+      b.classList.toggle("active", isCurrent);
+      if (isCurrent) {
+        b.scrollIntoView({ behavior: "smooth", inline: "nearest", block: "nearest" });
+      }
+    });
   }
 
   static bindGlobalEvents() {
@@ -170,17 +215,6 @@ class AppController {
         DataHubModalComponent.open();
       });
     }
-
-    // 标的快捷药丸
-    document.querySelectorAll(".stock-pill-btn").forEach(btn => {
-      btn.addEventListener("click", () => {
-        document.querySelectorAll(".stock-pill-btn").forEach(b => b.classList.remove("active"));
-        btn.classList.add("active");
-        currentCode = btn.dataset.code;
-        this.switchView("workstation");
-        this.renderCurrentStock();
-      });
-    });
 
     // 视图模式切换
     document.querySelectorAll(".view-tab-btn").forEach(tab => {
@@ -212,7 +246,7 @@ class AppController {
     universeView.classList.remove("active");
     workstationView.style.display = "none";
     reportView.classList.remove("active");
-    tickerSummaryBar.style.display = "grid";
+    tickerSummaryBar.style.display = "flex";
 
     if (viewName === "universe") {
       universeView.classList.add("active");
@@ -233,6 +267,7 @@ class AppController {
   }
 
   static renderCurrentStock() {
+    this.updateActiveStockPill();
     const data = getOrGenerateStockData(currentCode);
     if (!data) return;
 

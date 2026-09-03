@@ -17,17 +17,19 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 0 20px;
+  padding: 0 16px;
   height: 56px;
   background: var(--bg-secondary);
   border-bottom: 1px solid var(--border-subtle);
   backdrop-filter: blur(12px);
+  gap: 12px;
 }
 
 .brand-section {
   display: flex;
   align-items: center;
-  gap: 12px;
+  gap: 10px;
+  flex-shrink: 0;
 }
 
 .brand-logo {
@@ -53,26 +55,38 @@
 .stock-selector-pills {
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: 6px;
   background: var(--bg-primary);
   padding: 4px;
   border-radius: var(--radius-pill);
   border: 1px solid var(--border-subtle);
+  min-width: 0;
+  flex: 1 1 auto;
+  max-width: 620px;
+  overflow-x: auto;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+
+.stock-selector-pills::-webkit-scrollbar {
+  display: none;
 }
 
 .stock-pill-btn {
   background: transparent;
   border: none;
   color: var(--text-secondary);
-  padding: 4px 14px;
+  padding: 4px 10px;
   border-radius: var(--radius-pill);
-  font-size: 13px;
+  font-size: 12px;
   font-weight: 500;
   cursor: pointer;
   transition: all 0.15s ease;
   display: flex;
   align-items: center;
-  gap: 6px;
+  gap: 5px;
+  white-space: nowrap;
+  flex-shrink: 0;
 }
 
 .stock-pill-btn:hover {
@@ -90,7 +104,26 @@
 .nav-actions {
   display: flex;
   align-items: center;
-  gap: 12px;
+  gap: 8px;
+  flex-shrink: 0;
+}
+
+.action-btn {
+  background: var(--bg-tertiary);
+  border: 1px solid var(--border-subtle);
+  color: var(--text-primary);
+  padding: 5px 10px;
+  border-radius: var(--radius-sm);
+  font-size: 12px;
+  font-weight: 500;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: all 0.15s ease;
+}
+
+.action-btn:hover {
+  background: var(--bg-card);
+  border-color: var(--border-default);
 }
 
 .view-mode-tabs {
@@ -98,18 +131,20 @@
   background: var(--bg-primary);
   border: 1px solid var(--border-subtle);
   border-radius: var(--radius-md);
-  padding: 3px;
+  padding: 2px;
+  flex-shrink: 0;
 }
 
 .view-tab-btn {
   background: transparent;
   border: none;
   color: var(--text-secondary);
-  padding: 5px 12px;
+  padding: 5px 10px;
   border-radius: var(--radius-sm);
-  font-size: 13px;
+  font-size: 12px;
   font-weight: 500;
   cursor: pointer;
+  white-space: nowrap;
   transition: all 0.15s ease;
 }
 
@@ -122,33 +157,36 @@
 /* Main Content Area */
 .main-container {
   flex: 1;
-  padding: 16px 20px;
-  max-width: 1720px;
+  padding: 14px 16px;
+  max-width: 1780px;
   margin: 0 auto;
   width: 100%;
+  overflow-x: hidden;
 }
 
 /* Live Ticker Header Bar */
 .ticker-summary-bar {
-  display: grid;
-  grid-template-columns: auto 1fr auto;
-  gap: 20px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 16px;
   background: var(--bg-secondary);
   border: 1px solid var(--border-subtle);
   border-radius: var(--radius-lg);
-  padding: 14px 20px;
-  margin-bottom: 16px;
-  align-items: center;
+  padding: 12px 18px;
+  margin-bottom: 14px;
+  flex-wrap: wrap;
 }
 
 .ticker-identity {
   display: flex;
   align-items: baseline;
-  gap: 12px;
+  gap: 10px;
+  flex-shrink: 0;
 }
 
 .ticker-name {
-  font-size: 20px;
+  font-size: 18px;
   font-weight: 700;
   color: var(--text-primary);
 }
@@ -156,18 +194,18 @@
 .ticker-code {
   font-family: var(--font-mono);
   color: var(--text-secondary);
-  font-size: 14px;
+  font-size: 13px;
 }
 
 .ticker-tags {
   display: flex;
   gap: 6px;
-  margin-left: 8px;
+  margin-left: 6px;
 }
 
 .ticker-stats-row {
   display: flex;
-  gap: 24px;
+  gap: 20px;
   align-items: center;
   flex-wrap: wrap;
 }
@@ -179,7 +217,7 @@
 }
 
 .stat-label {
-  font-size: 11px;
+  font-size: 10px;
   color: var(--text-muted);
   text-transform: uppercase;
   letter-spacing: 0.3px;
@@ -187,33 +225,69 @@
 
 .stat-value {
   font-family: var(--font-mono);
-  font-size: 15px;
+  font-size: 14px;
   font-weight: 600;
   color: var(--text-primary);
+  font-variant-numeric: tabular-nums;
 }
 
-/* Workstation Grid Layout */
+/* Workstation Grid Layout - Hallmark Anti-Crowding Refinements */
 .workstation-grid {
   display: grid;
-  grid-template-columns: 380px 1fr 390px;
-  gap: 16px;
+  grid-template-columns: 310px minmax(0, 1fr) 320px;
+  gap: 14px;
   align-items: start;
 }
 
-@media (max-width: 1400px) {
+@media (max-width: 1480px) {
   .workstation-grid {
-    grid-template-columns: 340px 1fr 340px;
+    grid-template-columns: 290px minmax(0, 1fr) 300px;
+    gap: 12px;
   }
 }
 
-@media (max-width: 1150px) {
+@media (max-width: 1240px) {
+  .workstation-grid {
+    grid-template-columns: minmax(0, 1fr) 310px;
+  }
+  .column-left {
+    order: 2;
+  }
+  .column-center {
+    order: 1;
+  }
+  .column-right {
+    order: 3;
+    grid-column: span 2;
+  }
+}
+
+@media (max-width: 900px) {
   .workstation-grid {
     grid-template-columns: 1fr;
+  }
+  .column-right {
+    grid-column: span 1;
   }
 }
 
 .column-left, .column-center, .column-right {
   display: flex;
   flex-direction: column;
-  gap: 16px;
+  gap: 14px;
+  min-width: 0;
+}
+
+/* Dual Chart Grid & Split Grid inside Center Stage */
+.dual-chart-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 14px;
+}
+
+.zhang-xinmin-split-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 14px;
+  margin-bottom: 14px;
 }

@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="description" content="重器·周期反转与细分国企隐形冠军·量化投研工作站 - 基于张新民财报分析法、供需剪刀差与60/40双轨交易体系">
+  <meta name="description" content="重器·周期反转与细分国企隐形冠军·量化投研工作站 - 基于张新民财报分析法、十大选股原则、供需剪刀差与60/40双轨交易体系">
   <title>重器 · 周期国企隐形冠军量化投研终端</title>
 
   <!-- Google Fonts: Inter & JetBrains Mono -->
@@ -31,8 +31,8 @@
       <span class="brand-badge">国企周期重器 V3.5</span>
     </div>
 
-    <!-- 标的快速切换药丸 (常用快捷入口) -->
-    <div class="stock-selector-pills">
+    <!-- 标的快速切换药丸 (全量12只龙头快捷入口) -->
+    <div class="stock-selector-pills" id="stockSelectorPills">
       <button class="stock-pill-btn active" data-code="600409">
         <span>三友化工</span>
         <span style="font-family: var(--font-mono); font-size: 11px; opacity: 0.8;">600409</span>
@@ -49,13 +49,21 @@
 
     <!-- 视图模式切换与数据管理按钮 -->
     <div class="nav-actions">
+      <!-- 叠加制图快捷按钮 -->
+      <button class="action-btn" id="btnOpenChartStudio" style="display: flex; align-items: center; gap: 6px; border-color: var(--color-warning); color: var(--color-warning);">
+        <span>📈</span>
+        <span>叠加制图 (Chart Studio)</span>
+      </button>
+
+      <!-- 全渠道数据导入 -->
       <button class="action-btn" id="btnOpenDataHub" style="display: flex; align-items: center; gap: 6px; border-color: var(--color-brand); color: var(--color-brand);">
         <span>📥</span>
         <span>数据管理 (全渠道导入)</span>
       </button>
 
       <div class="view-mode-tabs">
-        <button class="view-tab-btn" data-view="universe">🎯 总标的库 (3大梯队)</button>
+        <button class="view-tab-btn" data-view="screener">🎯 十大原则选股器</button>
+        <button class="view-tab-btn" data-view="universe">🏛️ 总标的库 (3大梯队)</button>
         <button class="view-tab-btn active" data-view="workstation">📊 投研工作台</button>
         <button class="view-tab-btn" data-view="report">📑 机构级研报 (ShengFund)</button>
       </div>
@@ -66,6 +74,9 @@
   <main class="main-container">
     <!-- 标的实时摘要条 (Header Ticker - 工作台与研报可见) -->
     <div class="ticker-summary-bar" id="tickerSummaryBar"></div>
+
+    <!-- 视图 0：十大选股原则筛选器 -->
+    <div class="screener-view-container" id="screenerContainer" style="display: none;"></div>
 
     <!-- 视图 1：总标的库 (三大等级梯队) -->
     <div class="universe-view-container" id="universeContainer"></div>
@@ -93,8 +104,8 @@
           </div>
         </div>
 
-        <!-- 图表 2 与 图表 3 (并列双图) -->
-        <div style="display: grid; grid-template-columns: 1.2fr 1fr; gap: 16px;">
+        <!-- 图表 2 与 图表 3 (并列自适应双图) -->
+        <div class="dual-chart-grid">
           <!-- 产能-实际产量-开工率联动图 -->
           <div class="terminal-card">
             <div class="card-header">

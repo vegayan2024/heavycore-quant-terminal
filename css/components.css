@@ -97,9 +97,10 @@
   background: var(--bg-tertiary);
   border: 1px solid var(--border-subtle);
   border-radius: var(--radius-md);
-  padding: 10px 8px;
+  padding: 8px 4px;
   text-align: center;
   transition: all 0.2s ease;
+  min-width: 0;
 }
 
 .veto-box.passed {
@@ -113,19 +114,24 @@
 }
 
 .veto-box-icon {
-  font-size: 16px;
-  margin-bottom: 4px;
+  font-size: 15px;
+  margin-bottom: 2px;
 }
 
 .veto-box-title {
-  font-size: 12px;
+  font-size: 11px;
   font-weight: 600;
   color: var(--text-primary);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .veto-box-status {
-  font-size: 11px;
+  font-size: 10px;
   font-weight: 500;
+  line-height: 1.2;
+  margin-top: 2px;
 }
 
 .veto-box.passed .veto-box-status {

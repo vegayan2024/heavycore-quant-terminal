@@ -29,7 +29,7 @@ export class ZhangXinminPanelComponent {
           </span>
         </div>
 
-        <div style="display: grid; grid-template-columns: 1.2fr 1fr; gap: 16px; margin-bottom: 16px;">
+        <div class="zhang-xinmin-split-grid">
           <!-- 左侧：八看雷达图 -->
           <div>
             <div style="font-size: 12px; font-weight: 600; color: var(--text-secondary); margin-bottom: 6px;">

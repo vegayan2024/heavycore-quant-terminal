@@ -262,6 +262,9 @@ export class CustomCanvasCharts {
 
     const midX = width / 2;
     const midY = height / 2;
+    const isNarrow = width < 340;
+    const titleFont = isNarrow ? "bold 10px Inter, sans-serif" : "11px Inter, sans-serif";
+    const subFont = "9px Inter, sans-serif";
 
     // 绘制象限底色
     ctx.fillStyle = "#161b22";
@@ -283,32 +286,47 @@ export class CustomCanvasCharts {
     ctx.fillRect(20, 20, midX - 20, midY - 20);
 
     // 标注象限名称
-    ctx.font = "11px Inter, sans-serif";
     ctx.textAlign = "center";
     
     // 左上
     ctx.fillStyle = "#3fb950";
-    ctx.fillText("② 被动去库存 [黄金反转买点]", midX * 0.5, 40);
-    ctx.fillStyle = "#8b949e";
-    ctx.fillText("需求见底回升 + 行业库存极低", midX * 0.5, 56);
+    ctx.font = titleFont;
+    ctx.fillText(isNarrow ? "② 被动去库 (买点)" : "② 被动去库存 [黄金反转买点]", midX * 0.5, 30);
+    if (!isNarrow) {
+      ctx.fillStyle = "#8b949e";
+      ctx.font = subFont;
+      ctx.fillText("需求筑底回升 + 行业极低库", midX * 0.5, 46);
+    }
 
     // 右上
     ctx.fillStyle = "#58a6ff";
-    ctx.fillText("③ 主动补库存 [主升爆发期]", midX * 1.5, 40);
-    ctx.fillStyle = "#8b949e";
-    ctx.fillText("价量齐升 + 产能全开", midX * 1.5, 56);
+    ctx.font = titleFont;
+    ctx.fillText(isNarrow ? "③ 主动补库 (主升)" : "③ 主动补库存 [主升爆发期]", midX * 1.5, 30);
+    if (!isNarrow) {
+      ctx.fillStyle = "#8b949e";
+      ctx.font = subFont;
+      ctx.fillText("价量齐升 + 产能全开", midX * 1.5, 46);
+    }
 
     // 左下
     ctx.fillStyle = "#d29922";
-    ctx.fillText("① 主动去库存 [极寒出清期]", midX * 0.5, midY + 35);
-    ctx.fillStyle = "#8b949e";
-    ctx.fillText("停产降负 + 价格阴跌", midX * 0.5, midY + 51);
+    ctx.font = titleFont;
+    ctx.fillText(isNarrow ? "① 主动去库 (极寒)" : "① 主动去库存 [极寒出清期]", midX * 0.5, midY + (isNarrow ? 24 : 32));
+    if (!isNarrow) {
+      ctx.fillStyle = "#8b949e";
+      ctx.font = subFont;
+      ctx.fillText("停产降负 + 价格阴跌", midX * 0.5, midY + 48);
+    }
 
     // 右下
     ctx.fillStyle = "#f85149";
-    ctx.fillText("④ 被动补库存 [周期过热见顶]", midX * 1.5, midY + 35);
-    ctx.fillStyle = "#8b949e";
-    ctx.fillText("产能过剩 + 库存积压", midX * 1.5, midY + 51);
+    ctx.font = titleFont;
+    ctx.fillText(isNarrow ? "④ 被动补库 (见顶)" : "④ 被动补库存 [周期见顶]", midX * 1.5, midY + (isNarrow ? 24 : 32));
+    if (!isNarrow) {
+      ctx.fillStyle = "#8b949e";
+      ctx.font = subFont;
+      ctx.fillText("产能过剩 + 累库滞销", midX * 1.5, midY + 48);
+    }
 
     // 当前标的所处位置发光点 (位于第二象限)
     const targetX = midX * 0.55;
@@ -317,17 +335,17 @@ export class CustomCanvasCharts {
     // 呼吸光晕
     ctx.fillStyle = "rgba(63, 185, 80, 0.25)";
     ctx.beginPath();
-    ctx.arc(targetX, targetY, 14, 0, Math.PI * 2);
+    ctx.arc(targetX, targetY, 12, 0, Math.PI * 2);
     ctx.fill();
 
     ctx.fillStyle = "#3fb950";
     ctx.beginPath();
-    ctx.arc(targetX, targetY, 6, 0, Math.PI * 2);
+    ctx.arc(targetX, targetY, 5, 0, Math.PI * 2);
     ctx.fill();
 
     ctx.fillStyle = "#ffffff";
-    ctx.font = "bold 11px Inter, sans-serif";
-    ctx.fillText("当前标的位置", targetX, targetY - 12);
+    ctx.font = "bold 10px Inter, sans-serif";
+    ctx.fillText("当前标的", targetX, targetY - 10);
   }
 
   /**
@@ -341,19 +359,25 @@ export class CustomCanvasCharts {
     ctx.clearRect(0, 0, width, height);
 
     const centerX = width / 2;
-    const centerY = height / 2 + 8;
-    const radius = Math.min(centerX, centerY) - 35;
+    const centerY = height / 2 + 6;
+    const isNarrow = width < 310;
+    const radius = Math.max(30, Math.min(centerX, centerY) - (isNarrow ? 26 : 38));
 
     const labels = [
+      "看战略", "看管理", "看利润", "看创造",
+      "看成本", "看健康", "看风险", "看前景"
+    ];
+    const fullLabels = [
       "看战略定位", "看经营管理", "看利润质量", "看价值创造",
       "看成本控制", "看财务健康", "看风险防范", "看周期前景"
     ];
+    const displayLabels = isNarrow ? labels : fullLabels;
     const values = [
       radarData.lookStrategy, radarData.lookOperations, radarData.lookProfitQuality, radarData.lookValueCreation,
       radarData.lookCostControl, radarData.lookFinancialHealth, radarData.lookRiskManagement, radarData.lookProspects
     ];
 
-    const numAxes = labels.length;
+    const numAxes = displayLabels.length;
     const angleStep = (Math.PI * 2) / numAxes;
 
     // 绘制雷达同心圆网格
@@ -373,24 +397,26 @@ export class CustomCanvasCharts {
     }
 
     // 绘制轴线与文字
-    ctx.font = "11px Inter, sans-serif";
+    ctx.font = isNarrow ? "9px Inter, sans-serif" : "11px Inter, sans-serif";
     for (let i = 0; i < numAxes; i++) {
       const angle = i * angleStep - Math.PI / 2;
       const x = centerX + Math.cos(angle) * radius;
       const y = centerY + Math.sin(angle) * radius;
 
+      ctx.strokeStyle = "#21262d";
       ctx.beginPath();
       ctx.moveTo(centerX, centerY);
       ctx.lineTo(x, y);
       ctx.stroke();
 
-      // 标签文字
-      const labelX = centerX + Math.cos(angle) * (radius + 20);
-      const labelY = centerY + Math.sin(angle) * (radius + 18);
+      // 绘制轴端文字
+      const textX = centerX + Math.cos(angle) * (radius + (isNarrow ? 12 : 16));
+      const textY = centerY + Math.sin(angle) * (radius + (isNarrow ? 12 : 16));
+
       ctx.fillStyle = "#8b949e";
-      ctx.textAlign = Math.abs(Math.cos(angle)) < 0.1 ? "center" : (Math.cos(angle) > 0 ? "left" : "right");
+      ctx.textAlign = Math.abs(Math.cos(angle)) < 0.2 ? "center" : (Math.cos(angle) > 0 ? "left" : "right");
       ctx.textBaseline = "middle";
-      ctx.fillText(labels[i], labelX, labelY);
+      ctx.fillText(displayLabels[i], textX, textY);
     }
 
     // 绘制数据多边形
