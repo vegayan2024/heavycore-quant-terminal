@@ -75,7 +75,7 @@ if not os.path.exists(git_dir):
 
 run_git(["git", "status"])
 run_git(["git", "add", "."])
-run_git(["git", "commit", "-m", "feat: Hallmark 首页拥挤排查重构与 12 大行业细分龙头扩充入库 (V3.6)\n\n- [UI/UX] 运用 Hallmark Anti-AI-Slop 准则全面重塑顶部导航栏，实现标的自适应横向滑动药丸槽，消除小分辨率下的截断溢出\n- [Layout] 重构投研工作台三栏黄金工位比(310px/1fr/320px)，新增 dual-chart-grid 与 zhang-xinmin-split-grid 自适应堆叠网格\n- [Charts] Canvas 图表动态计算文字边距与自适应高DPI缩放，彻底杜绝雷达图与库存周期钟文本越界与锯齿碰撞\n- [Data] 接入 12 只核心行业龙头(湖北宜化、云天化、华鲁恒升、远兴能源、巨化股份、龙佰集团、中钨高新、洛阳钼业、三友化工、北方稀土、中信特钢、郑煤机)\n- [Pipeline] 建立基于金融数据流的实时行情抓取流水线与全维财务模型"])
+run_git(["git", "commit", "-m", "fix: 彻底修复库存周期定位钟 Canvas 容器高度与象限文字显示不全问题\n\n- [CSS] 根因修复：给 .chart-container-box canvas 显式补全 100% 宽高与 display:block，杜绝 HTML5 默认 300x150px 压扁画布\n- [Layout] 将开工率与库存周期钟容器高度从 190px 扩充至 240px，增加 26% 纵向排版空间\n- [Charts] 四象限主标题与副标题改为四角定位对齐(textAlign: left/right, textBaseline: top/bottom)，完全释放中心区域\n- [Pill] 当前标的指示点重构为带半透明背景的独立浮动信息胶囊，并动态传入标的简称，彻底消除文字碰撞越界"])
 run_git(["git", "push", "origin", "main"])
 
 print("\n✅ GitHub 同步与发布流程全部执行完毕！")

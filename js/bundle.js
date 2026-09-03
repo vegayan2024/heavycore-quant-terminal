@@ -4383,7 +4383,7 @@ class CustomCanvasCharts {
   /**
    * 图表 3：库存周期四象限钟
    */
-  static renderCycleClock(canvasId, currentPhase = "被动去库") {
+  static renderCycleClock(canvasId, currentPhase = "被动去库", stockName = "") {
     const canvas = document.getElementById(canvasId);
     if (!canvas) return;
     const { ctx, width, height } = this.initCanvas(canvas);
@@ -4392,90 +4392,129 @@ class CustomCanvasCharts {
 
     const midX = width / 2;
     const midY = height / 2;
-    const isNarrow = width < 340;
-    const titleFont = isNarrow ? "bold 10px Inter, sans-serif" : "11px Inter, sans-serif";
-    const subFont = "9px Inter, sans-serif";
+    const isNarrow = width < 360;
 
-    // 绘制象限底色
+    // 1. 绘制象限底色
     ctx.fillStyle = "#161b22";
     ctx.fillRect(0, 0, width, height);
 
-    // 十字轴
+    // 2. 高亮黄金买点象限 (左上：被动去库)
+    ctx.fillStyle = "rgba(63, 185, 80, 0.09)";
+    ctx.fillRect(0, 0, midX, midY);
+
+    // 3. 十字坐标轴
     ctx.strokeStyle = "#30363d";
     ctx.lineWidth = 1.5;
     ctx.beginPath();
-    ctx.moveTo(20, midY);
-    ctx.lineTo(width - 20, midY);
-    ctx.moveTo(midX, 20);
-    ctx.lineTo(midX, height - 20);
+    ctx.moveTo(10, midY);
+    ctx.lineTo(width - 10, midY);
+    ctx.moveTo(midX, 10);
+    ctx.lineTo(midX, height - 10);
     ctx.stroke();
 
-    // 象限背景轻微高亮
-    // 左上：被动去库存 (黄金买点)
-    ctx.fillStyle = "rgba(63, 185, 80, 0.08)";
-    ctx.fillRect(20, 20, midX - 20, midY - 20);
+    // 4. 坐标轴方向标注
+    ctx.font = "9px Inter, sans-serif";
+    ctx.fillStyle = "#6e7681";
+    ctx.textBaseline = "middle";
 
-    // 标注象限名称
+    ctx.textAlign = "left";
+    ctx.fillText("← 需求收缩", 12, midY - 8);
+    ctx.textAlign = "right";
+    ctx.fillText("需求复苏 →", width - 12, midY - 8);
+
     ctx.textAlign = "center";
-    
-    // 左上
+    ctx.fillText("↑ 累库阶段", midX + 32, 16);
+    ctx.fillText("↓ 去库阶段", midX + 32, height - 16);
+
+    // 5. 四象限专业标签（四角对齐，永不遮挡中心点）
+    const titleFont = isNarrow ? "bold 11px Inter, sans-serif" : "bold 12px Inter, sans-serif";
+    const subFont = isNarrow ? "10px Inter, sans-serif" : "11px Inter, sans-serif";
+
+    // 左上象限：② 被动去库存 [黄金买点]
+    ctx.textAlign = "left";
+    ctx.textBaseline = "top";
     ctx.fillStyle = "#3fb950";
     ctx.font = titleFont;
-    ctx.fillText(isNarrow ? "② 被动去库 (买点)" : "② 被动去库存 [黄金反转买点]", midX * 0.5, 30);
-    if (!isNarrow) {
-      ctx.fillStyle = "#8b949e";
-      ctx.font = subFont;
-      ctx.fillText("需求筑底回升 + 行业极低库", midX * 0.5, 46);
-    }
+    ctx.fillText("② 被动去库存 [黄金买点]", 14, 12);
+    ctx.fillStyle = "#8b949e";
+    ctx.font = subFont;
+    ctx.fillText(isNarrow ? "需求回暖·库存触底" : "下游需求筑底回升 + 行业极低库存", 14, 30);
 
-    // 右上
+    // 右上象限：③ 主动补库存 [主升期]
+    ctx.textAlign = "right";
+    ctx.textBaseline = "top";
     ctx.fillStyle = "#58a6ff";
     ctx.font = titleFont;
-    ctx.fillText(isNarrow ? "③ 主动补库 (主升)" : "③ 主动补库存 [主升爆发期]", midX * 1.5, 30);
-    if (!isNarrow) {
-      ctx.fillStyle = "#8b949e";
-      ctx.font = subFont;
-      ctx.fillText("价量齐升 + 产能全开", midX * 1.5, 46);
-    }
+    ctx.fillText("③ 主动补库存 [主升期]", width - 14, 12);
+    ctx.fillStyle = "#8b949e";
+    ctx.font = subFont;
+    ctx.fillText(isNarrow ? "价量齐升·开工打满" : "价格上涨 + 订单饱满 + 逆势抢份额", width - 14, 30);
 
-    // 左下
+    // 左下象限：① 主动去库存 [左侧出清]
+    ctx.textAlign = "left";
+    ctx.textBaseline = "bottom";
+    ctx.fillStyle = "#8b949e";
+    ctx.font = subFont;
+    ctx.fillText(isNarrow ? "停产关停·落后出清" : "行业全线普亏 + 资本开支大幅收缩", 14, height - 28);
     ctx.fillStyle = "#d29922";
     ctx.font = titleFont;
-    ctx.fillText(isNarrow ? "① 主动去库 (极寒)" : "① 主动去库存 [极寒出清期]", midX * 0.5, midY + (isNarrow ? 24 : 32));
-    if (!isNarrow) {
-      ctx.fillStyle = "#8b949e";
-      ctx.font = subFont;
-      ctx.fillText("停产降负 + 价格阴跌", midX * 0.5, midY + 48);
-    }
+    ctx.fillText("① 主动去库存 [左侧出清]", 14, height - 10);
 
-    // 右下
+    // 右下象限：④ 被动补库存 [见顶防守]
+    ctx.textAlign = "right";
+    ctx.textBaseline = "bottom";
+    ctx.fillStyle = "#8b949e";
+    ctx.font = subFont;
+    ctx.fillText(isNarrow ? "需求转弱·被动积压" : "新装置密集投产 + 渠道库存高企", width - 14, height - 28);
     ctx.fillStyle = "#f85149";
     ctx.font = titleFont;
-    ctx.fillText(isNarrow ? "④ 被动补库 (见顶)" : "④ 被动补库存 [周期见顶]", midX * 1.5, midY + (isNarrow ? 24 : 32));
-    if (!isNarrow) {
-      ctx.fillStyle = "#8b949e";
-      ctx.font = subFont;
-      ctx.fillText("产能过剩 + 累库滞销", midX * 1.5, midY + 48);
-    }
+    ctx.fillText("④ 被动补库存 [见顶防守]", width - 14, height - 10);
 
-    // 当前标的所处位置发光点 (位于第二象限)
-    const targetX = midX * 0.55;
-    const targetY = midY * 0.65;
+    // 6. 当前标的位置发光雷达点
+    const targetX = midX * 0.48;
+    const targetY = midY * 0.60;
 
-    // 呼吸光晕
-    ctx.fillStyle = "rgba(63, 185, 80, 0.25)";
+    ctx.fillStyle = "rgba(63, 185, 80, 0.2)";
     ctx.beginPath();
-    ctx.arc(targetX, targetY, 12, 0, Math.PI * 2);
+    ctx.arc(targetX, targetY, 18, 0, Math.PI * 2);
     ctx.fill();
+
+    ctx.strokeStyle = "rgba(63, 185, 80, 0.6)";
+    ctx.lineWidth = 1.5;
+    ctx.beginPath();
+    ctx.arc(targetX, targetY, 10, 0, Math.PI * 2);
+    ctx.stroke();
 
     ctx.fillStyle = "#3fb950";
     ctx.beginPath();
     ctx.arc(targetX, targetY, 5, 0, Math.PI * 2);
     ctx.fill();
 
-    ctx.fillStyle = "#ffffff";
-    ctx.font = "bold 10px Inter, sans-serif";
-    ctx.fillText("当前标的", targetX, targetY - 10);
+    // 7. 标的位置浮动信息胶囊（独立半透明背景，永不碰撞文字）
+    const pillText = `📍 ${stockName || '当前标的'} · 被动去库确认`;
+    ctx.font = "bold 11px Inter, sans-serif";
+    const tw = ctx.measureText(pillText).width;
+    const pw = tw + 16;
+    const ph = 22;
+    const px = Math.max(10, targetX - pw / 2);
+    const py = targetY + 12;
+
+    ctx.fillStyle = "rgba(13, 17, 23, 0.9)";
+    ctx.strokeStyle = "#3fb950";
+    ctx.lineWidth = 1;
+    ctx.beginPath();
+    if (ctx.roundRect) {
+      ctx.roundRect(px, py, pw, ph, 4);
+    } else {
+      ctx.rect(px, py, pw, ph);
+    }
+    ctx.fill();
+    ctx.stroke();
+
+    ctx.fillStyle = "#3fb950";
+    ctx.textAlign = "center";
+    ctx.textBaseline = "middle";
+    ctx.fillText(pillText, px + pw / 2, py + ph / 2);
   }
 
   /**
@@ -6041,7 +6080,7 @@ class AppController {
     setTimeout(() => {
       CustomCanvasCharts.renderSpreadChart("canvasSpreadChart", data.capacityTrend);
       CustomCanvasCharts.renderCapacityPriceChart("canvasCapacityChart", data.capacityTrend);
-      CustomCanvasCharts.renderCycleClock("canvasCycleClock", "被动去库");
+      CustomCanvasCharts.renderCycleClock("canvasCycleClock", "被动去库", data.profile.name);
     }, 50);
   }
 }

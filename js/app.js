@@ -342,7 +342,7 @@ class AppController {
     setTimeout(() => {
       CustomCanvasCharts.renderSpreadChart("canvasSpreadChart", data.capacityTrend);
       CustomCanvasCharts.renderCapacityPriceChart("canvasCapacityChart", data.capacityTrend);
-      CustomCanvasCharts.renderCycleClock("canvasCycleClock", "被动去库");
+      CustomCanvasCharts.renderCycleClock("canvasCycleClock", "被动去库", data.profile.name);
     }, 50);
   }
 }
